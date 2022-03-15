@@ -2,13 +2,22 @@ const FtpSrv = require('ftp-srv');
 
 
 const ftpServer = new FtpSrv(
-{ anonymous: true, greeting : [ "Hello ", "Wie gehts?" ] })
+{ anonymous: false, greeting : [ "Hello ", "Wie gehts?" ] })
 
+// const ftpServer = new FtpSrv({
+//     url: "ftp://0.0.0.0:" + port,
+//     anonymous: true
+// });
 
-ftpServer.on('login',(data,resolve,reject)=>{
-   console.log('EITA')
-
-    resolve ( { root: './ftp_files' } );
+ftpServer.on('login',({connection, username,password},resolve,reject)=>{
+    console.log('CAPTURA.')
+    
+    if(username ==='admin' && password==='1234'){
+        resolve ( { root: './ftp_files' } );
+    }else {
+        reject(new Error('Unable to connect'));
+    }
+    
 });
 
 ftpServer.on('client-error',(connection,context,error)=>{
